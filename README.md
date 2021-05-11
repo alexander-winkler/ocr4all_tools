@@ -14,9 +14,15 @@ Some regex that have proved useful for my (early modern, Latin) use cases:
 * `[qQ][^u]`
 * `(.)\1{3,}`
 
-# Models
+# Tesseract on PageXML
 
-The `models` directory contains some `calamari` models.
+`tess_page` contains a simple function that applies Tesseract ([`pytesseract`](https://pypi.org/project/pytesseract/)) to PageXML files. Requires a functioning `pytesseract` configuration and `PIL`.
+
+`tess_pagexml` takes the OCR4all project directory (containing the `processing` subfolder with binarized png files and pagexml) as an argument and substitutes existing OCR with tesseract OCR or writes new OCR if there is none.
+
+The original pagexml is stored as a backup in a directory `old_processing`.
+
+The function `mask` could be useful as well: It takes a list of vertices and optionally a named argument (`img` = "string") and returns a line snippet. As a default, it expects that the `img` variable has already been defined.
 
 ## Cyrillic
 
