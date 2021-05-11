@@ -1,10 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[84]:
-
-
-from lxml import etree
 try:
     from PIL import Image,ImageDraw
 except ImportError:
@@ -13,22 +9,17 @@ import pytesseract
 from glob import glob
 import re
 from pathlib import Path
-
-
-# In[85]:
-
+import sys
+from lxml import etree
 
 NSMAP = {'page': 'http://schema.primaresearch.org/PAGE/gts/pagecontent/2019-07-15'}
-
-
-# In[86]:
 
 
 ## Code snippet adapted from
 #https://stackoverflow.com/questions/22588074/polygon-crop-clip-using-python-pil
 
 
-def mask(coords, img=img):
+def mask(coords, img):
     xy = [tuple(map(int, tuples.split(','))) for tuples in coords.split(" ")]
     x_coordinates = [c[0] for c in xy]
     y_coordinates = [c[1] for c in xy]
@@ -41,11 +32,7 @@ def mask(coords, img=img):
     result = result.crop((a,b,c,d))
     return result
 
-
-# In[89]:
-
-
-def tess_pagexml(project_dir):
+def tess_pagexml(project_dir, language):
     xml_files = (Path(project_dir) / "processing").glob("*.xml")
     for XML in xml_files:
         print(f"Start working on {str(XML)} now.")
@@ -53,7 +40,6 @@ def tess_pagexml(project_dir):
         tree = etree.parse(str(XML))
         img_info = tree.find('page:Page', NSMAP).attrib
         img = Image.open(project_dir+"/processing/"+img_info['imageFilename'].replace('.png','.bin.png'))
-
         # Make copy of pagexml in subdir 'old_processing'
         legacy_dir = Path(XML).parents[1].joinpath('old_processing')
         legacy_dir.mkdir(exist_ok=True)
@@ -66,9 +52,8 @@ def tess_pagexml(project_dir):
         print("Starting OCR on page with tesseract ...")
         for line in tree.findall('.//page:TextLine', NSMAP):
             coords = line.find('page:Coords', NSMAP).attrib['points']
-            m = mask(coords)
-            output = plt.imshow(m)
-            ocr = pytesseract.image_to_string(m, lang='rus')
+            m = mask(coords,img)
+            ocr = pytesseract.image_to_string(m, lang = language)
             ocr_text = line.find('page:TextEquiv[@index="1"]', NSMAP)
             if ocr_text is not None:
                 ocr_text.text = ocr
@@ -83,8 +68,12 @@ def tess_pagexml(project_dir):
             print(f"New {XML.name} written.")
 
 
-# In[ ]:
+if not len(sys.argv) == 3:
+    project_dir = input("Provide project directory")
+    language = input("Provide valid language string")
+else:
+    project_dir = sys.argv[1]
+    language = sys.argv[2]
 
-
-
+tess_pagexml(project_dir,language)
 
