@@ -27,3 +27,29 @@ The function `mask` could be useful as well: It takes a list of vertices and opt
 ## Cyrillic
 
 The `cyrillic` model was trained on 64k lines of synthetically created GT, using about 8 different fonts. Its performance on historical prints is still very poor, but maybe it can serve as a point of departure.
+
+# Requirements
+
+Installing calamari 1.0.5 that is compatible with CR4all can be a bit confusing. `requirements.txt` contains the configuration that works in a Python 3.7 environment.
+
+Installation of calamari 1.0.5 works as follows (thanks for [hints and instructions](https://github.com/Calamari-OCR/calamari/issues/246) to the developers!):
+
+## Prepare virtual environment
+
+```bash
+
+mkdir ~/path/to/virutalenv
+
+python3.7 -m venv ~/path/to/virtualenv
+
+source ~/path/to/virtualenv/bin/activate
+
+pip install git+https://github.com/Calamari-OCR/calamari.git@calamari/1.0
+
+pip install tensorflow==2.1 
+
+# or download the requirements.txt file and do
+
+pip install -r requirements.txt 
+
+```
