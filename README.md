@@ -47,9 +47,41 @@ source ~/path/to/virtualenv/bin/activate
 pip install git+https://github.com/Calamari-OCR/calamari.git@calamari/1.0
 
 pip install tensorflow==2.1 
+```
 
-# or download the requirements.txt file and do
+Another way to install everything necessary: Download the requirements.txt file and do:
+
+```bash
 
 pip install -r requirements.txt 
 
 ```
+
+# Training models
+
+To train a model that is compatible with OCR4all:
+
+First, make sure you have a folder for temporary files and for your best models:
+
+```bash
+
+mkdir tmp
+mkdir best_models
+
+```
+
+Then run
+
+```bash
+
+calamari-cross-fold-train --files path/to/project/processing/*.bin.png path/to/other_project/processing/*.bin.png --dataset PAGEXML --best_models_dir best_models --display 100 --batch_size 5 --temporary_dir tmp --text_regularization spaces --n_augmentation 5 
+
+```
+
+If you want to train an already existing model, just add at the end
+
+```
+--weights path/to/model/your_model.ckpt.h5
+```
+
+
